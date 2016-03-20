@@ -18,12 +18,13 @@ public class LiveStreamPanel extends JPanel
 
     public LiveStreamPanel()
     {
-        this.capture = new VideoCapture("D:\\Users\\Swinny\\Desktop\\test.mp4");
+        this.capture = new VideoCapture();
+        this.capture.open("http://plazacam.studentaffairs.duke.edu/mjpg/video.mjpg");
 
         if(!this.capture.isOpened())
         {
-            System.out.println("Could not capture the video");
-            //System.exit(1337);
+            System.out.println("Could not find the IP Camera. Is it on?");
+            System.exit(1337);
         }
 
         this.currentFrame = new Mat();
@@ -35,6 +36,7 @@ public class LiveStreamPanel extends JPanel
                 this.capture.read(this.currentFrame);
 
                 Image frame = toBufferedImage(this.currentFrame);
+                ImageLoader.getInstance().saveImage(frame);
                 this.getGraphics().drawImage(frame, 0, 0, null);
             }
         };

@@ -19,7 +19,8 @@ public class Main
         System.load(opencvpath +  Core.NATIVE_LIBRARY_NAME + ".dll");
     }
 
-    public static String STORAGE_DIR = "path";
+    public static String STORAGE_DIR = "D:\\Users\\Swinny\\Desktop\\test\\";
+
     private JFrame frame;
     private SliderPanel sliderPanel;
     private LiveStreamPanel liveStreamPanel;
@@ -38,14 +39,15 @@ public class Main
         this.totalImageCount = imageDir.listFiles().length;
 
         this.frame = new JFrame();
-        this.frame.setUndecorated(true);
+        //this.frame.setUndecorated(true);
         this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        //this.frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        this.frame.setSize(new Dimension(800, 600));
         this.frame.setLocationRelativeTo(null);
         this.frame.getContentPane().setBackground(Color.DARK_GRAY);
 
-        //this.liveStreamPanel = new LiveStreamPanel();
-        //this.frame.add(this.liveStreamPanel, BorderLayout.CENTER);
+        this.liveStreamPanel = new LiveStreamPanel();
+        this.frame.add(this.liveStreamPanel, BorderLayout.CENTER);
 
         this.sliderPanel = new SliderPanel();
         this.frame.add(this.sliderPanel, BorderLayout.SOUTH);
