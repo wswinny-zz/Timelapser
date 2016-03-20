@@ -11,5 +11,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="Maven: org.javaopencvbook:opencvjar:3.0.0" level="project" />
+    <orderEntry type="library" name="Maven: org.javaopencvbook:opencvjar-runtime:natives-windows-x86:3.0.0" level="project" />
   </component>
 </module>
