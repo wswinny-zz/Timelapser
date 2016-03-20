@@ -43,7 +43,7 @@ public class ImageLoader
 
         try
         {
-            File imageSave = new File("IMG_" + System.currentTimeMillis() + "." + extension);
+            File imageSave = new File(Main.STORAGE_DIR + "IMG_" + System.currentTimeMillis() + "." + extension);
             ImageIO.write((BufferedImage)image, extension, imageSave);
         }
         catch (IOException e)
