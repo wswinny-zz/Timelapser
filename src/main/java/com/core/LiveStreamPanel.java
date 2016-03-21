@@ -5,6 +5,7 @@ import org.opencv.videoio.VideoCapture;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 
@@ -15,11 +16,22 @@ public class LiveStreamPanel extends JPanel
 {
     private VideoCapture capture;
     private Mat currentFrame;
+    private Image currentFrameImage = null;
+
+    private JLabel imageLabel;
 
     public LiveStreamPanel()
     {
+        this.setLayout(new GridLayout(1,1));
+        this.setBackground(Color.DARK_GRAY);
+
+        this.imageLabel = new JLabel("", JLabel.CENTER);
+        this.imageLabel.setBackground(Color.DARK_GRAY);
+
+        this.add(this.imageLabel);
+
         this.capture = new VideoCapture();
-        this.capture.open("http://plazacam.studentaffairs.duke.edu/mjpg/video.mjpg");
+        this.capture.open(Main.VIDEO_SOURCE);
 
         if(!this.capture.isOpened())
         {
@@ -30,18 +42,32 @@ public class LiveStreamPanel extends JPanel
         this.currentFrame = new Mat();
 
         Runnable captureThread = () -> {
-
             while(true)
             {
-                this.capture.read(this.currentFrame);
-
-                Image frame = toBufferedImage(this.currentFrame);
-                ImageLoader.getInstance().saveImage(frame);
-                this.getGraphics().drawImage(frame, 0, 0, null);
+                try
+                {
+                    this.capture.read(this.currentFrame);
+                    this.currentFrameImage = toBufferedImage(this.currentFrame);
+                    this.imageLabel.setIcon(new ImageIcon(
+                            this.currentFrameImage.getScaledInstance(
+                                    this.imageLabel.getWidth(),
+                                    this.imageLabel.getHeight(),
+                                    Image.SCALE_SMOOTH)
+                    ));
+                }
+                catch (Exception e)
+                {
+                    System.out.println("The graphics object for the LiveStreamPanel is null skipping this frame");
+                }
             }
         };
-
         new Thread(captureThread).start();
+
+        ActionListener imageSaver = (e) -> {
+            if(this.currentFrameImage != null)
+                ImageLoader.getInstance().saveImage(this.currentFrameImage);
+        };
+        new Timer(Main.IMAGE_SAVE_RATE, imageSaver).start();
     }
 
     public Image toBufferedImage(Mat m)

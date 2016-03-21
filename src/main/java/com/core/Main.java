@@ -19,7 +19,10 @@ public class Main
         System.load(opencvpath +  Core.NATIVE_LIBRARY_NAME + ".dll");
     }
 
-    public static String STORAGE_DIR = "D:\\Users\\Swinny\\Desktop\\test\\";
+    public static final String STORAGE_DIR = "D:\\Users\\Swinny\\Desktop\\test\\";
+    public static final String VIDEO_SOURCE = "http://217.91.58.189:1024/mjpg/video.mjpg";
+
+    public static final int IMAGE_SAVE_RATE = 1000; //in miliseconds
 
     private JFrame frame;
     private SliderPanel sliderPanel;
