@@ -17,9 +17,10 @@ public class Main
     {
         String opencvpath = System.getProperty("user.dir") + "\\libs\\";
         System.load(opencvpath +  Core.NATIVE_LIBRARY_NAME + ".dll");
+        System.load(opencvpath + "opencv_ffmpeg300_64.dll");
     }
 
-    public static final String STORAGE_DIR = "D:\\Users\\Swinny\\Desktop\\test\\";
+    public static final String STORAGE_DIR = "C:\\Users\\Saphixx\\Desktop\\TimeTest\\";
     public static final String VIDEO_SOURCE = "http://217.91.58.189:1024/mjpg/video.mjpg";
 
     public static final int IMAGE_SAVE_RATE = 1000; //in miliseconds
