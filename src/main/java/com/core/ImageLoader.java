@@ -18,6 +18,7 @@ public class ImageLoader
 {
     private static ImageLoader instance = null;
 
+    private int bufferNumber = 513;                                     //How many images will be buffered at a time
     private short interval = 1;                                         //How often a picture from the livestream is saved in seconds
     private String extension = "jpg";                                   //What pictures are saved as
     private int nextImage = 0;                                          //The number the next picture should be saved as
@@ -25,7 +26,7 @@ public class ImageLoader
     private int imageCount = 0;                                         //The number of images loaded
     private int totalImages = 0;                                        //The total number of images saved
     private int realCurrent = 0;                                        //The image we are currently on of the saved images
-    private ArrayList<Image> imageRoll =  new ArrayList<>(513);
+    private ArrayList<Image> imageRoll =  new ArrayList<>(this.bufferNumber);
 
     //**************************************************************
     // For debug perposes
@@ -47,7 +48,7 @@ public class ImageLoader
     //**************************************************************
     private ImageLoader()
     {
-        int numToLoad = 513;
+        int numToLoad = this.bufferNumber - 1;
 
         if(this.nextImage == 0)
         {
@@ -58,7 +59,7 @@ public class ImageLoader
             //gets the total number of images already saved
             this.totalImages = files.length;
 
-            if(this.totalImages < 513)
+            if(this.totalImages < numToLoad)
                 numToLoad = this.totalImages;
 
             for (int a = 0; a <= numToLoad; a++)
@@ -166,10 +167,10 @@ public class ImageLoader
     //**************************************************************
     private boolean addNextImage()
     {
-        if(removeImage(0))
+        if(!removeImage(0))
             return false;
 
-        if(addImage(this.realCurrent + 129, false))
+        if(addImage(this.realCurrent + ((this.bufferNumber - 1) / 2), false))
             return true;
         else
             return false;
@@ -181,10 +182,10 @@ public class ImageLoader
     //**************************************************************
     private boolean addPrevImage()
     {
-        if(removeImage(511))
+        if(!removeImage(512))
             return false;
 
-        if(addImage(this.realCurrent - 129, true))
+        if(addImage(this.realCurrent - ((this.bufferNumber - 1) / 2), true))
             return true;
         else
             return false;
@@ -198,27 +199,30 @@ public class ImageLoader
     private boolean oneForward()
     {
         //Prevents the Real image from trying to increase past the lsat saved image
-        if(this.totalImages - (this.realCurrent + 1) == 0)
+        if(this.totalImages - (this.realCurrent + 1) <= 0)
             return false;
 
         //If there are more then 128 left outside the imageRoll
-        if(this.totalImages - this.realCurrent > 128)
+        if(this.totalImages - this.realCurrent > ((this.bufferNumber - 1) / 2))
         {
             //Just advances the imageRoll by one if we are already at the center of the roll
-            if (this.currentImage == 128)
+            if (this.currentImage == ((this.bufferNumber - 1) / 2))
             {
-                this.addNextImage();
+                if (!this.addNextImage())
+                    return false;
+
                 this.realCurrent++;
                 return true;
             }
             //If we are past the center of the roll moves us back to the center while only advancing one image
-            else if(this.currentImage > 128)
+            else if(this.currentImage > ((this.bufferNumber - 1) / 2))
             {
-                for(int a = 0; a < ((this.currentImage - 128) + 1); a++)
-                    this.addNextImage();
+                for(int a = 0; a < ((this.currentImage - ((this.bufferNumber - 1) / 2)) + 1); a++)
+                    if (this.addNextImage())
+                        return false;
 
-                this.realCurrent -= this.currentImage - 128;
-                this.currentImage = 128;
+                this.realCurrent++;
+                this.currentImage = ((this.bufferNumber - 1) / 2);
                 return true;
             }
         }
@@ -237,14 +241,19 @@ public class ImageLoader
     //**************************************************************
     private boolean oneBack()
     {
+        //Prevents trying to get images before the first
         if(this.currentImage == 0)
             return false;
-        else if(this.currentImage == 128 && this.realCurrent > 128)
+        //Just moves back imageRoll by one when we are already at the center of the Roll and have more then 128 image lef tot move back through
+        else if(this.currentImage == ((this.bufferNumber - 1) / 2) && this.realCurrent > ((this.bufferNumber - 1) / 2))
         {
-            this.addPrevImage();
+            if (this.addPrevImage())
+                return false;
+
             this.realCurrent--;
             return true;
         }
+        //moves the current image back when there are less then 128 image lef tto move back through
         else
         {
             this.currentImage--;
@@ -260,8 +269,10 @@ public class ImageLoader
     public Image getNextImage()
     {
         this.report();
-        if(this.currentImage + 1 > 512)
+
+        if(this.currentImage + 1 > this.bufferNumber - 1)
         {
+            System.exit(6699);
             return null;
         }
         else
@@ -301,7 +312,7 @@ public class ImageLoader
     public Image getcurrentImage()
     {
         this.report();
-        if(this.currentImage > 511)
+        if(this.currentImage > this.bufferNumber - 2)
         {
             return null;
         }
