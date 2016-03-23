@@ -133,6 +133,11 @@ public class ImageLoader
         return this.getImage(this.getImagePath(this.currentImage));
     }
 
+    public int getTotalOfImages()
+    {
+        return this.totalImages;
+    }
+
     //**************************************************************
     // Returns the date and time the current image was created
     //**************************************************************
