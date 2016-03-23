@@ -7,6 +7,7 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.File;
+import java.text.SimpleDateFormat;
 
 /**
  * Created by Swinny on 3/19/2016.
@@ -20,13 +21,16 @@ public class Main implements KeyListener
         System.load(opencvpath + "opencv_ffmpeg300_64.dll");
     }
 
-    public static final String STORAGE_DIR = "C:\\Users\\Saphixx\\Desktop\\TimeTest\\";
+    public static final String STORAGE_DIR = "D:\\Users\\Swinny\\Desktop\\test\\";
     public static final String VIDEO_SOURCE = "http://217.91.58.189:1024/mjpg/video.mjpg";
 
-    public static final int IMAGE_SAVE_RATE = 1000; //in miliseconds
+    public static final int IMAGE_SAVE_RATE = 1000 * 60; //in miliseconds
+
+
 
     private JFrame frame;
     private JPanel sliderPanel;
+    private JLabel dateLabel;
     private JSlider timeSlider;
 
     private JLayeredPane layeredPane;
@@ -71,9 +75,13 @@ public class Main implements KeyListener
         this.layeredPane.add(this.liveStreamPanel, JLayeredPane.DEFAULT_LAYER);
 
         this.sliderPanel = new JPanel();
-        this.sliderPanel.setLayout(new GridLayout(1, 2));
+        this.sliderPanel.setLayout(new GridLayout(2, 1));
         this.sliderPanel.setBackground(Color.DARK_GRAY);
         this.frame.add(this.sliderPanel, BorderLayout.SOUTH);
+
+        this.dateLabel = new JLabel("", JLabel.CENTER);
+        this.dateLabel.setBackground(Color.DARK_GRAY);
+        this.sliderPanel.add(this.dateLabel);
 
         this.timeSlider = new JSlider(JSlider.HORIZONTAL, 0, 100, 0);
         this.timeSlider.setMinorTickSpacing(1);
@@ -122,6 +130,8 @@ public class Main implements KeyListener
                 this.liveStreamToFront();
 
             this.picturePanel.repaint();
+
+            this.dateLabel.setText(ImageLoader.getInstance().getCurrentDateTimeAsString());
         }
         if(e.getKeyCode() == KeyEvent.VK_LEFT) {
             if(this.layeredPane.getLayer(this.liveStreamPanel) == JLayeredPane.PALETTE_LAYER)
@@ -129,6 +139,8 @@ public class Main implements KeyListener
 
             ImageLoader.getInstance().getPrevImage();
             this.picturePanel.repaint();
+
+            this.dateLabel.setText(ImageLoader.getInstance().getCurrentDateTimeAsString());
         }
     }
 
@@ -151,6 +163,8 @@ public class Main implements KeyListener
 
         this.layeredPane.setLayer(this.liveStreamPanel, JLayeredPane.PALETTE_LAYER);
         this.layeredPane.setLayer(this.picturePanel, JLayeredPane.DEFAULT_LAYER);
+
+        this.dateLabel.setText("");
     }
 
     private void picturesToFront()

@@ -9,6 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -18,11 +19,12 @@ public class ImageLoader
 {
     private static ImageLoader instance = null;
 
-    private int bufferNumber = 1500;                                     //How many images will be buffered at a time
     private String extension = "jpg";                                   //What pictures are saved as
     private int nextImage = 0;                                          //The number the next picture should be saved as
     private int currentImage = 0;                                       //The current spot in the arraylist
     private int totalImages = 0;                                        //The total number of images saved
+
+    private final SimpleDateFormat dateFormatter = new SimpleDateFormat("EEEE h:m:s 'on' MMMM d, yyyy");
 
     //**************************************************************
     // Default constructor
@@ -141,23 +143,21 @@ public class ImageLoader
     //**************************************************************
     // Returns the date and time the current image was created
     //**************************************************************
-    public Calendar getCurrentDateTime()
+    public String getCurrentDateTimeAsString()
     {
-        Calendar dateTime = Calendar.getInstance();
-
         Path file = Paths.get(this.getImagePath(this.currentImage).getAbsolutePath());
+        Date date = new Date();
 
         try {
             BasicFileAttributes attr = Files.readAttributes(file, BasicFileAttributes.class);
-
-            Calendar.getInstance().setTimeInMillis(attr.creationTime().toMillis());
+            date = new Date(attr.creationTime().toMillis());
         }
         catch (IOException e)
         {
             System.out.println("Didn't work");
         }
 
-        return dateTime;
+        return dateFormatter.format(date);
     }
 
     //**************************************************************
