@@ -20,7 +20,7 @@ public class Main implements KeyListener
         System.load(opencvpath + "opencv_ffmpeg300_64.dll");
     }
 
-    public static final String STORAGE_DIR = "D:\\Users\\Swinny\\Desktop\\test\\";
+    public static final String STORAGE_DIR = "C:\\Users\\Saphixx\\Desktop\\TimeTest\\";
     public static final String VIDEO_SOURCE = "http://217.91.58.189:1024/mjpg/video.mjpg";
 
     public static final int IMAGE_SAVE_RATE = 1000; //in miliseconds
@@ -58,7 +58,7 @@ public class Main implements KeyListener
             @Override
             public void paintComponent(Graphics g)
             {
-                g.drawImage(ImageLoader.getInstance().getcurrentImage(), 0, 0, getWidth(), getHeight(), null);
+                g.drawImage(ImageLoader.getInstance().getCurrentImage(), 0, 0, getWidth(), getHeight(), null);
             }
         };
 
@@ -116,6 +116,7 @@ public class Main implements KeyListener
 
     @Override
     public void keyPressed(KeyEvent e) {
+
         if(e.getKeyCode() == KeyEvent.VK_RIGHT) {
             ImageLoader.getInstance().getNextImage();
             this.picturePanel.repaint();

@@ -44,29 +44,27 @@ public class ImageLoader
     // Default constructor
     // Makes sure that we start adding images at the correct position
     // Which could be 0 on first start or anytime the program was restarted
-    // Also loads up t0 513 Images into imageRoll
+    // Also loads up to 513 Images into imageRoll
     //**************************************************************
     private ImageLoader()
     {
-        int numToLoad = this.bufferNumber - 1;
+    //    int numToLoad = this.bufferNumber - 1;
 
         if(this.nextImage == 0)
         {
             File dir =  new File(Main.STORAGE_DIR);
 
-            String files[] =  dir.list();
-
             //gets the total number of images already saved
-            this.totalImages = files.length;
+            this.totalImages = dir.list().length;
 
-            if(this.totalImages < numToLoad)
-                numToLoad = this.totalImages;
+        //    if(this.totalImages < numToLoad)
+        //        numToLoad = this.totalImages;
 
-            for (int a = 0; a <= numToLoad; a++)
-                addImage(a, false);
+        //    for (int a = 0; a <= numToLoad; a++)
+        //        addImage(a, false);
 
             //Used to start saving from where the program last ended
-            this.nextImage = files.length;
+            this.nextImage = this.totalImages;
         }
     }
 
@@ -109,11 +107,13 @@ public class ImageLoader
         }
 
         this.nextImage++;
+    //    if(this.imageCount < this.bufferNumber)
+    //        addImage(this.nextImage - 1, false);
         this.totalImages++;  //creates race condition
 
         return true;
     }
-
+    /*
     //**************************************************************
     // Takes in an integer imageNum
     // takes in a boolean frontBack that determines if the image should be added to the front (false) or the back (true)
@@ -121,7 +121,7 @@ public class ImageLoader
     //**************************************************************
     private boolean addImage(int imageNum, boolean frontBack)
     {
-        this.report();
+        //this.report();
 
         String saveFormat;
         Image tmpImage;
@@ -199,10 +199,10 @@ public class ImageLoader
     private boolean oneForward()
     {
         //Prevents the Real image from trying to increase past the lsat saved image
-        if(this.totalImages - (this.realCurrent + 1) <= 0)
+        if(this.totalImages - (this.realCurrent) <= 0)
             return false;
 
-        //If there are more then 128 left outside the imageRoll
+        //If there are more then 256 left outside the imageRoll
         if(this.totalImages - this.realCurrent > ((this.bufferNumber - 1) / 2))
         {
             //Just advances the imageRoll by one if we are already at the center of the roll
@@ -227,7 +227,7 @@ public class ImageLoader
             }
         }
 
-        //if their is 128 or less image left or if their are more then 128 left but the current image hasn't reached the center of imageRoll
+        //if their is 256 or less image left or if their are more then 256 left but the current image hasn't reached the center of imageRoll
         this.currentImage++;
         this.realCurrent++;
         return true;
@@ -261,6 +261,7 @@ public class ImageLoader
             return true;
         }
     }
+    */
 
     //**************************************************************
     // Moves one the current image forward one and returns the new current
@@ -268,21 +269,36 @@ public class ImageLoader
     //**************************************************************
     public Image getNextImage()
     {
-        this.report();
 
-        if(this.currentImage + 1 > this.bufferNumber - 1)
+     //   this.report();
+        /*
+        if(this.currentImage + 1 > this.bufferNumber)
         {
-            System.exit(6699);
             return null;
+        }
+        if (this.realCurrent == this.totalImages)
+        {
+            System.out.println("Returned Current");
+            return this.imageRoll.get(this.currentImage);
         }
         else
         {
+            System.out.println("Return Next");
             if(oneForward())
                 return this.imageRoll.get(this.currentImage);
             else
                 return null;
         }
+        */
 
+        if (this.currentImage < this.totalImages)
+        {
+            this.currentImage++;
+
+            return this.getImage(this.getImagePath(this.currentImage));
+        }
+
+        return null;
     }
 
     //**************************************************************
@@ -291,7 +307,8 @@ public class ImageLoader
     //**************************************************************
     public Image getPrevImage()
     {
-        this.report();
+    //    this.report();
+        /*
         if(this.currentImage - 1 < 0)
         {
             return null;
@@ -303,15 +320,26 @@ public class ImageLoader
             else
                 return null;
         }
+        */
+
+        if (this.currentImage > 0)
+        {
+            this.currentImage--;
+
+            return this.getImage(this.getImagePath(this.currentImage));
+        }
+
+        return null;
     }
 
     //**************************************************************
     // returns the current image
     // returns null on failure
     //**************************************************************
-    public Image getcurrentImage()
+    public Image getCurrentImage()
     {
-        this.report();
+    //    this.report();
+        /*
         if(this.currentImage > this.bufferNumber - 2)
         {
             return null;
@@ -324,6 +352,14 @@ public class ImageLoader
         {
             return this.imageRoll.get(this.currentImage);
         }
+        */
+
+        return this.getImage(this.getImagePath(this.currentImage));
+    }
+
+    public Image getLastImage()
+    {
+        return this.getImage(this.getImagePath(this.totalImages));
     }
 
     //**************************************************************
@@ -350,8 +386,44 @@ public class ImageLoader
         return dateTime;
     }
 
+    //**************************************************************
+    // Returns the date and time the current image was created
+    //**************************************************************
+    public String getCurrentName()
+    {
+        String saveFormat;
+
+        saveFormat = String.format("%010d", this.realCurrent);
+
+        return saveFormat;
+    }
+
     public void setExtension(String ext)
     {
         this.extension = ext;
+    }
+
+    private File getImagePath(int num)
+    {
+        File imagePath = new File(Main.STORAGE_DIR + "IMG_" + String.format("%010d", num) + "." + this.extension);
+
+        return imagePath;
+    }
+
+    private Image getImage(File file)
+    {
+        Image tmpImage =  null;
+
+        try
+        {
+            tmpImage = ImageIO.read(file);
+
+        }
+        catch (IOException e)
+        {
+            System.out.println("Could not get Image: " + file.getName());
+        }
+
+        return tmpImage;
     }
 }
