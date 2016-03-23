@@ -18,7 +18,7 @@ public class ImageLoader
 {
     private static ImageLoader instance = null;
 
-    private int bufferNumber = 513;                                     //How many images will be buffered at a time
+    private int bufferNumber = 1500;                                     //How many images will be buffered at a time
     private short interval = 1;                                         //How often a picture from the livestream is saved in seconds
     private String extension = "jpg";                                   //What pictures are saved as
     private int nextImage = 0;                                          //The number the next picture should be saved as
@@ -57,11 +57,11 @@ public class ImageLoader
             //gets the total number of images already saved
             this.totalImages = dir.list().length;
 
-        //    if(this.totalImages < numToLoad)
-        //        numToLoad = this.totalImages;
+    //        if(this.totalImages < numToLoad)
+    //            numToLoad = this.totalImages;
 
-        //    for (int a = 0; a <= numToLoad; a++)
-        //        addImage(a, false);
+    //        for (int a = 0; a <= numToLoad; a++)
+    //            addImage(a, false);
 
             //Used to start saving from where the program last ended
             this.nextImage = this.totalImages;
@@ -359,7 +359,9 @@ public class ImageLoader
 
     public Image getLastImage()
     {
-        return this.getImage(this.getImagePath(this.totalImages));
+        this.currentImage = this.totalImages;
+
+        return this.getImage(this.getImagePath(this.currentImage));
     }
 
     //**************************************************************
