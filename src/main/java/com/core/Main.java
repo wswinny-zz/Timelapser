@@ -20,7 +20,7 @@ public class Main implements KeyListener
         System.load(opencvpath + "opencv_ffmpeg300_64.dll");
     }
 
-    public static final String STORAGE_DIR = "C:\\Users\\Saphixx\\Desktop\\TimeTest\\";
+    public static final String STORAGE_DIR = "D:\\Users\\Swinny\\Desktop\\test\\";
     public static final String VIDEO_SOURCE = "http://217.91.58.189:1024/mjpg/video.mjpg";
 
     public static final int IMAGE_SAVE_RATE = 1000; //in miliseconds
@@ -118,10 +118,15 @@ public class Main implements KeyListener
     public void keyPressed(KeyEvent e) {
 
         if(e.getKeyCode() == KeyEvent.VK_RIGHT) {
-            ImageLoader.getInstance().getNextImage();
+            if(ImageLoader.getInstance().getNextImage() == null)
+                this.liveStreamToFront();
+
             this.picturePanel.repaint();
         }
         if(e.getKeyCode() == KeyEvent.VK_LEFT) {
+            if(this.layeredPane.getLayer(this.liveStreamPanel) == JLayeredPane.PALETTE_LAYER)
+                this.picturesToFront();
+
             ImageLoader.getInstance().getPrevImage();
             this.picturePanel.repaint();
         }
@@ -138,5 +143,26 @@ public class Main implements KeyListener
         this.layeredPane.setLayer(this.liveStreamPanel, this.layeredPane.getLayer(this.picturePanel));
         this.layeredPane.setLayer(this.picturePanel, temp);
     }
+
+    private void liveStreamToFront()
+    {
+        if(this.layeredPane.getLayer(this.liveStreamPanel) == JLayeredPane.PALETTE_LAYER)
+            return;
+
+        this.layeredPane.setLayer(this.liveStreamPanel, JLayeredPane.PALETTE_LAYER);
+        this.layeredPane.setLayer(this.picturePanel, JLayeredPane.DEFAULT_LAYER);
+    }
+
+    private void picturesToFront()
+    {
+        if(this.layeredPane.getLayer(this.picturePanel) == JLayeredPane.PALETTE_LAYER)
+            return;
+
+        this.layeredPane.setLayer(this.liveStreamPanel, JLayeredPane.DEFAULT_LAYER);
+        this.layeredPane.setLayer(this.picturePanel, JLayeredPane.PALETTE_LAYER);
+
+        ImageLoader.getInstance().getLastImage();
+    }
+
 
 }
