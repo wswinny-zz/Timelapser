@@ -291,7 +291,7 @@ public class ImageLoader
         }
         */
 
-        if (this.currentImage < this.totalImages)
+        if (this.currentImage < this.totalImages - 1)
         {
             this.currentImage++;
 
