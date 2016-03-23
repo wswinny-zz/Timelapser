@@ -145,7 +145,7 @@ public class ImageLoader
     {
         Calendar dateTime = Calendar.getInstance();
 
-        Path file = Paths.get(this.getImagePath(this.currentImage).getName());
+        Path file = Paths.get(this.getImagePath(this.currentImage).getAbsolutePath());
 
         try {
             BasicFileAttributes attr = Files.readAttributes(file, BasicFileAttributes.class);
