@@ -24,7 +24,7 @@ public class Main implements KeyListener, EventBus
     public static final String STORAGE_DIR = Config.getInstance().getImageDirPath();
     public static final String VIDEO_SOURCE = Config.getInstance().getVideoSourceString();
 
-    public static final int IMAGE_SAVE_RATE = 1000; //in miliseconds
+    public static final int IMAGE_SAVE_RATE = Config.getInstance().getSaveRate(); //in miliseconds
 
     private JFrame frame;
     private JPanel sliderPanel;

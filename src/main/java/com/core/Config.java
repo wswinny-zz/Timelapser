@@ -15,6 +15,8 @@ public class Config
     private String imageDirPath = System.getProperty("user.home");
     private String videoSourceString = "http://217.91.58.189:1024/mjpg/video.mjpg";
 
+    private int saveRate = 1000 * 60;
+
     private Config() {
         try
         {
@@ -22,6 +24,10 @@ public class Config
 
             this.imageDirPath = this.configReader.readLine();
             this.videoSourceString = this.configReader.readLine();
+
+            String temp = this.configReader.readLine();
+            double decimalValue = Double.valueOf(temp);
+            this.saveRate = (int) Math.ceil(decimalValue);
 
             if(!this.imageDirPath.endsWith("/") || !this.imageDirPath.endsWith("\\"))
                 this.imageDirPath += File.separator;
@@ -43,6 +49,7 @@ public class Config
     {
         System.out.printf("Using %s as img dir\n", this.imageDirPath);
         System.out.printf("Using %s as video source\n", this.videoSourceString);
+        System.out.printf("Using %d millis as img save rate\n", this.saveRate);
     }
 
     private void writeNewConfig()
@@ -54,6 +61,8 @@ public class Config
             configWriter.write(this.imageDirPath);
             configWriter.write("\n");
             configWriter.write(this.videoSourceString);
+            configWriter.write("\n");
+            configWriter.write(this.saveRate);
 
             configWriter.close();
 
@@ -75,5 +84,9 @@ public class Config
 
     public String getVideoSourceString() {
         return videoSourceString;
+    }
+
+    public int getSaveRate() {
+        return saveRate;
     }
 }
