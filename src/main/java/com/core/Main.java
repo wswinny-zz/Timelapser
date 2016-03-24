@@ -21,12 +21,10 @@ public class Main implements KeyListener, EventBus
         System.load(opencvpath + "opencv_ffmpeg300_64.dll");
     }
 
-    public static final String STORAGE_DIR = "D:\\Users\\Swinny\\Desktop\\test\\";
-    public static final String VIDEO_SOURCE = "http://217.91.58.189:1024/mjpg/video.mjpg";
+    public static final String STORAGE_DIR = Config.getInstance().getImageDirPath();
+    public static final String VIDEO_SOURCE = Config.getInstance().getVideoSourceString();
 
-    public static final int IMAGE_SAVE_RATE = 1000 * 60; //in miliseconds
-
-
+    public static final int IMAGE_SAVE_RATE = 1000; //in miliseconds
 
     private JFrame frame;
     private JPanel sliderPanel;
@@ -46,6 +44,8 @@ public class Main implements KeyListener, EventBus
             System.out.println("The directory for images in the config does not exist!");
             System.exit(69);
         }
+
+        System.out.println("Found directory: " + imageDir.getAbsolutePath());
 
         ImageLoader.getInstance();
 
