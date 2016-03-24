@@ -24,7 +24,7 @@ public class ImageLoader
     private int currentImage = 0;                                       //The current spot in the arraylist
     private int totalImages = 0;                                        //The total number of images saved
 
-    private final SimpleDateFormat dateFormatter = new SimpleDateFormat("EEEE h:m:s 'on' MMMM d, yyyy");
+    private final SimpleDateFormat dateFormatter = new SimpleDateFormat("EEEE hh:mm:ss 'on' MMMM dd, yyyy");
 
     //**************************************************************
     // Default constructor

@@ -12,7 +12,7 @@ import java.text.SimpleDateFormat;
 /**
  * Created by Swinny on 3/19/2016.
  */
-public class Main implements KeyListener
+public class Main implements KeyListener, EventBus
 {
     static
     {
@@ -47,6 +47,8 @@ public class Main implements KeyListener
             System.exit(69);
         }
 
+        ImageLoader.getInstance();
+
         this.frame = new JFrame();
 //        this.frame.setUndecorated(true);
         this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -72,6 +74,7 @@ public class Main implements KeyListener
 
         this.liveStreamPanel = new LiveStreamPanel();
         this.liveStreamPanel.setBounds(0, 0, 1600, 850);
+        this.liveStreamPanel.addEventBusListener(this);
         this.layeredPane.add(this.liveStreamPanel, JLayeredPane.DEFAULT_LAYER);
 
         this.sliderPanel = new JPanel();
@@ -79,11 +82,13 @@ public class Main implements KeyListener
         this.sliderPanel.setBackground(Color.DARK_GRAY);
         this.frame.add(this.sliderPanel, BorderLayout.SOUTH);
 
-        this.dateLabel = new JLabel("", JLabel.CENTER);
+        this.dateLabel = new JLabel(ImageLoader.getInstance().getCurrentDateTimeAsString(), JLabel.CENTER);
         this.dateLabel.setBackground(Color.DARK_GRAY);
+        this.dateLabel.setForeground(Color.WHITE);
+        this.dateLabel.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 16));
         this.sliderPanel.add(this.dateLabel);
 
-        this.timeSlider = new JSlider(JSlider.HORIZONTAL, 0, 100, 0);
+        this.timeSlider = new JSlider(JSlider.HORIZONTAL, 0, ImageLoader.getInstance().getTotalOfImages(), 0);
         this.timeSlider.setMinorTickSpacing(1);
         this.timeSlider.setMajorTickSpacing(5);
         this.timeSlider.setPaintTicks(false);
@@ -149,6 +154,11 @@ public class Main implements KeyListener
 
     }
 
+    @Override
+    public void imageSaved() {
+        this.timeSlider.setMaximum(ImageLoader.getInstance().getTotalOfImages());
+    }
+
     private void swapPanels()
     {
         int temp = this.layeredPane.getLayer(this.liveStreamPanel);
@@ -163,8 +173,6 @@ public class Main implements KeyListener
 
         this.layeredPane.setLayer(this.liveStreamPanel, JLayeredPane.PALETTE_LAYER);
         this.layeredPane.setLayer(this.picturePanel, JLayeredPane.DEFAULT_LAYER);
-
-        this.dateLabel.setText("");
     }
 
     private void picturesToFront()

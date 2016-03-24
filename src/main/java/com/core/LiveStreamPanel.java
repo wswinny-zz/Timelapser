@@ -8,6 +8,7 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
+import java.util.ArrayList;
 
 /**
  * Created by Swinny on 3/19/2016.
@@ -19,6 +20,8 @@ public class LiveStreamPanel extends JPanel
     private Image currentFrameImage = null;
 
     private JLabel imageLabel;
+
+    private ArrayList<EventBus> listeners = new ArrayList<EventBus>();
 
     public LiveStreamPanel()
     {
@@ -64,8 +67,12 @@ public class LiveStreamPanel extends JPanel
         new Thread(captureThread).start();
 
         ActionListener imageSaver = (e) -> {
-            if(this.currentFrameImage != null)
+            if(this.currentFrameImage != null) {
                 ImageLoader.getInstance().saveImage(this.currentFrameImage);
+
+                for(EventBus eventBus : this.listeners)
+                    eventBus.imageSaved();
+            }
         };
         new Timer(Main.IMAGE_SAVE_RATE, imageSaver).start();
     }
@@ -89,4 +96,10 @@ public class LiveStreamPanel extends JPanel
 
         return image;
     }
+
+    public void addEventBusListener(EventBus eventBus)
+    {
+        this.listeners.add(eventBus);
+    }
+
 }
