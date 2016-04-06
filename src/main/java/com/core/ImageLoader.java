@@ -91,6 +91,15 @@ public class ImageLoader
     // Moves one the current image forward one and returns the new current
     // returns null on failure
     //**************************************************************
+    public Image getImageAt(int imageNum)
+    {
+        return this.getImage(this.getImagePath(imageNum));
+    }
+
+    //**************************************************************
+    // Moves one the current image forward one and returns the new current
+    // returns null on failure
+    //**************************************************************
     public Image getNextImage()
     {
         if (this.currentImage < this.totalImages - 1)
@@ -196,6 +205,7 @@ public class ImageLoader
         catch (IOException e)
         {
             System.out.println("Could not get Image: " + file.getName());
+            return null;
         }
 
         return tmpImage;
